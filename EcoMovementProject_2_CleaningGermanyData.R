@@ -1,16 +1,6 @@
 ### ------------ Eco Movement Project ------------ ###
-### ------------- by Alican Tanaçan -------------- ###
+### ------------- by Alican TanaÃ§an -------------- ###
 ### ---- Version 2: Cleaning Germany Dataset ----- ###
-
-## In this version the data is cleaned and runned a recursive feature elimination with
-## random forest algorithm to find out which variables define the dependent variable.
-## Since private chargers' observations are very few, filtering them out was logical to
-## find related variables. Later we are going to increase the amount of private 
-## observations for modelization. If we can acquire more private charger examples to add 
-## to the data, our models will become more reliable.
-## Important Note: Please be careful to core selection, if your
-## computer does not have 8 cores, please do NOT run the core selection
-## cluster codes.
 
 ### ---- Libraries ----
 if(require("pacman") == "FALSE"){
@@ -31,25 +21,12 @@ OriginalEcoData$X <- NULL
 
 ## Detect Missing Values
 sum(is.na(OriginalEcoData)) # Total 19769 NA's
-
 colSums(is.na(OriginalEcoData))
-# operator_id has 183 NA's
-# owner_id has 183 NA's
-# opening_times has 4364 NA's
-# charging_when_closed has 4536 NA's
-# additional_geo_location has 5652 NA's
-# powertype has 832 NA's
-# street has 15 NA's
-# administrative_area_1 has 3334 NA's
-# administrative_area_2 has 670 NA's
 
 ## Amount of Observations in each level of y
 OriginalEcoData %>% 
   group_by(public_access_type_id) %>% 
   summarise(count(public_access_type_id))
-# 7994 Public
-# 195 Private
-# 2712 Company
 
 ### ---- Initial Data Visualizations ----
 ## Map of Germany, drawn with chargers
@@ -123,7 +100,7 @@ EcoData$Open_Hours <- as.factor(EcoData$Open_Hours)
 EcoData %>% 
   filter(Open_Hours != "Unknown") -> EcoData
 
-## Remove Variables above 53 factor levels and Identifiers for Recursive Feature Elimination
+## Remove Variablesmfor Recursive Feature Elimination
 EcoData %>%
   select(-masterlocation_id,
          -charging_spots_id,
@@ -197,9 +174,6 @@ plot(ReadyEcoData$power,
 ReadyEcoData %>% 
   group_by(public_access_type_id) %>% 
   summarise(count(public_access_type_id))
-# 4596 Public
-# 77 Private
-# 1864 Company
 
 ## Change y data type to character in order to subset without empty classes
 ReadyEcoData$public_access_type_id <- as.character(ReadyEcoData$public_access_type_id)
@@ -273,12 +247,6 @@ plot(rfeResults, type=c("g", "o"))
 
 ## Most Important Variables
 varImp(rfeResults)
-#                Overall
-# lat           38.88346
-# lng           32.62864
-# Open_Hours    23.32273
-# power         20.99297
-# physical_type 20.84720
 
 ## Create new data set with rfe recommended features
 EcoDataRFE <- EcoData[,predictors(rfeResults)]
@@ -295,16 +263,10 @@ predRFE <- predict(rfeResults, EcoData_Test)
 ## Model Metrics
 postResample(predRFE, EcoData_Test$public_access_type_id) -> RFEmodelmetrics
 RFEmodelmetrics
-# Accuracy: 0.960
-# Kappa: 0.921
 
 ## Confusion Matrix
 RFEConfMat <- confusionMatrix(predRFE$pred, EcoData_Test$public_access_type_id)
 RFEConfMat 
-#           Reference
-# Prediction   1   3
-#          1 541  26
-#          3  18 533
 
 ## Stop Cluster
 stopCluster(cl)
