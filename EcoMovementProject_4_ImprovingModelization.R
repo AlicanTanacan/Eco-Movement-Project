@@ -1,14 +1,6 @@
 ### ------------ Eco Movement Project ------------ ###
-### ------------- by Alican Tanaçan -------------- ###
+### ------------- by Alican TanaÃ§an -------------- ###
 ### ----- Version 4: Improving Modelization ------ ###
-
-## In this version, we try to improve the performance metrics of
-## our random forest model.
-## Important Note: Please correct the path on source before running!
-## Source function should get the version 1 of our analysis.
-## Important Note: Please be careful to core selection, if your
-## computer does not have 8 cores, please do NOT run the core selection
-## cluster codes.
 
 ### ---- Libraries & Source ---- 
 if(require("pacman") == "FALSE"){
@@ -72,9 +64,6 @@ unique(ReadyEcoData) -> ReadyEcoData
 ReadyEcoData %>% 
   group_by(public_access_type_id) %>% 
   summarise(count(public_access_type_id))
-# 4596 Public
-# 77 Private
-# 1864 Company
 
 ## Change y data type to character in order to subset without empty classes
 ReadyEcoData$public_access_type_id <- as.character(ReadyEcoData$public_access_type_id)
@@ -153,11 +142,6 @@ plot(RFmodel)
 
 ## Most Important Variables
 plot(varImp(RFmodel))
-# power
-# Open_Hours (Regular)
-# lat
-# lng
-# capability_remote_start_stop_capable (Y)
 
 ## Predicton on Test set
 predRFmodel <- predict(RFmodel, EcoData_Test)
@@ -169,18 +153,8 @@ RFmodelmetrics
 ## Confusion Matrix
 RFConfMat <- confusionMatrix(predRFmodel, EcoData_Test$public_access_type_id) 
 RFConfMat
-#              Reference
-# Prediction   1   2   3
-#          1 531   0  12
-#          2   1 544   4
-#          3  27   0 543
-
 # Accuracy: 0.973
 # Kappa: 0.960
-
-## This model is quite good to predict access types in Germany and only Germany.
-## However, we must not forget how e generated extra private data and the amount
-## of duplicates among the train dataset.
 
 ## Save the model to disk
 save(RFmodel, file = "EcoGermanyRFModel.rda")
