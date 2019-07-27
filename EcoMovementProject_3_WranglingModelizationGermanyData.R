@@ -1,17 +1,6 @@
 ### ------------ Eco Movement Project ------------ ###
-### ------------- by Alican Tanaçan -------------- ###
+### ------------- by Alican TanaÃ§an -------------- ###
 ### -- Version 3: Data Wrangling & Modelization -- ###
-
-## In this version I try increase the amount of 'Private' observations by 
-## over sampling the dependent variable. 
-## It is important to remember that every private observation created this
-## way is artificial, not REAL!
-## As we input more private data into the dataset, our confidence for our
-## models will surely increase, although we might experience a decrease
-## in the performance metrics.
-## Important Note: Please be careful to core selection, if your
-## computer does not have 8 cores, please do NOT run the core selection
-## cluster codes.
 
 ### ---- Libraries & Source ---- 
 if(require("pacman") == "FALSE"){
@@ -76,9 +65,6 @@ EcoData_Test2 <- EcoGermanyData_SlctSample[-intrain,]
 EcoData_Train2 %>% 
   group_by(public_access_type_id) %>% 
   summarise(count(public_access_type_id))
-# Public: 1305
-# Private: 1271
-# Company: 1305
 
 ### ---- Core Selection ----
 ## Find how many cores are on your machine
@@ -109,11 +95,6 @@ plot(RFmodel1)
 
 ## Most Important Variables
 plot(varImp(RFmodel1))
-# power
-# Open_Hours (Regular)
-# lat
-# lng
-# capability_remote_start_stop_capable (Y)
 
 ## Predicton on Test set
 predRFmodel1 <- predict(RFmodel1, EcoData_Test2)
@@ -125,12 +106,6 @@ RFmodel1metrics
 ## Confusion Matrix
 RFConfMat <- confusionMatrix(predRFmodel1, EcoData_Test2$public_access_type_id) 
 RFConfMat
-#              Reference
-# Prediction   1   2   3
-#          1 535   0  13
-#          2   1 544  11
-#          3  23   0 535
-
 # Accuracy: 0.971
 # Kappa: 0.956
 
@@ -165,12 +140,6 @@ C50model1metrics
 ## Confusion Matrix
 C50ConfMat <- confusionMatrix(predC50model1, EcoData_Test2$public_access_type_id) 
 C50ConfMat
-#              Reference
-# Prediction   1   2   3
-#          1 518   0  18
-#          2   4 544  17
-#          3  37   0 524
-
 # Accuracy: 0.954
 # Kappa: 0.931
 
@@ -201,12 +170,6 @@ GBMmodel1metrics
 ## Confusion Matrix
 GBMConfMat <- confusionMatrix(predGBMmodel1, EcoData_Test2$public_access_type_id) 
 GBMConfMat
-#              Reference
-# Prediction   1   2   3
-#          1 531   0  18
-#          2   3 544   6
-#          3  25   0 535
-
 # Accuracy: 0.968
 # Kappa: 0.935
 
@@ -238,12 +201,6 @@ kNNmodel1metrics
 ## Confusion Matrix
 kNNConfMat <- confusionMatrix(predkNNmodel1, EcoData_Test2$public_access_type_id) 
 kNNConfMat
-#              Reference
-# Prediction   1   2   3
-#          1 531   0  18
-#          2   3 544   6
-#          3  25   0 522
-
 # Accuracy: 0.968
 # Kappa: 0.953
 
@@ -270,11 +227,8 @@ AccuracyMetrics <- AccuracyMetrics[, c(3,1,2)]
 ## Arranging by Accuracy to see the best models
 AccuracyMetrics %>% 
   arrange(desc(Accuracy))
-
 #         Algorithms  Accuracy     Kappa
 #    RFmodel1metrics 0.9711191 0.9566794 ***
 #   GBMmodel1metrics 0.9687124 0.9530682
 #   kNNmodel1metrics 0.9687124 0.9530682
 #   C50model1metrics 0.9542720 0.9314141
-
-# *** : Random Forest model performs the best! Let's improve it..
