@@ -1,5 +1,5 @@
 ### ------------ Eco Movement Project ------------ ###
-### ------------- by Alican Tanaçan -------------- ###
+### ------------- by Alican TanaÃ§an -------------- ###
 ### --- Version 4.2: Validation on Norway Data --- ###
 
 ### ---- Libraries & Source ---- 
@@ -161,14 +161,3 @@ NorwayRFMetrics
 ## Confusion Matrix
 NorwayRFConfMat <- confusionMatrix(Pred_RF_Norway, ReadyNorwayEcoData$public_access_type_id) 
 NorwayRFConfMat
-
-# Accuracy : 0.553
-# Kappa : 0.0263 
-
-## The model that predicts Access Type (Charger Type) for Germany is not
-## good enough to predict charger types in Germany. It is because of lat 
-## and lng. We either have to combine all datasets to find a unified model
-## that predicts both countries or we have to create different models for 
-## each country. Now that we have a model for Germany, let's analyse Norway!
-
-## Important Note: This does NOT mean that Germany Model is inefficient!
