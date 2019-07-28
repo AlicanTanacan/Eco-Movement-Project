@@ -1,9 +1,6 @@
 ### ------------ Eco Movement Project ------------ ###
-### ------------- by Alican Tanaçan -------------- ###
+### ------------- by Alican TanaÃ§an -------------- ###
 ### ----- Version 4.1: Adjusting for Norway ------ ###
-
-### This version is only here for adjusting variables and their data types for 
-### predicting Norway data as a validation dataset.
 
 ### ---- Libraries & Source ---- 
 if(require("pacman") == "FALSE"){
@@ -63,9 +60,6 @@ ReadyEcoData %>%
 ReadyEcoData %>% 
   group_by(public_access_type_id) %>% 
   summarise(count(public_access_type_id))
-# 4596 Public
-# 77 Private
-# 1864 Company
 
 ## Change y data type to character in order to subset without empty classes
 ReadyEcoData$public_access_type_id <- as.character(ReadyEcoData$public_access_type_id)
@@ -144,11 +138,6 @@ plot(RFmodel2)
 
 ## Most Important Variables
 plot(varImp(RFmodel2))
-# power
-# Open_Hours (Regular)
-# lat
-# lng
-# capability_remote_start_stop_capable (Y)
 
 ## Predicton on Test set
 predRFmodel2 <- predict(RFmodel2, EcoData_Test)
@@ -160,12 +149,6 @@ RFmodel2metrics
 ## Confusion Matrix
 RFConfMat2 <- confusionMatrix(predRFmodel2, EcoData_Test$public_access_type_id) 
 RFConfMat2
-#              Reference
-# Prediction   1   2   3
-#          1 531   0  12
-#          2   1 544   4
-#          3  27   0 543
-
 # Accuracy: 0.973
 # Kappa: 0.960
 
