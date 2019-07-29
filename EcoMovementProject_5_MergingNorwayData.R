@@ -1,5 +1,5 @@
 ### ------------ Eco Movement Project ------------ ###
-### ------------- by Alican Tanaçan -------------- ###
+### ------------- by Alican TanaÃ§an -------------- ###
 ### ----- Version 5: Merging Norway Datasets ----- ###
 
 ### ---- Libraries & Source ---- 
@@ -36,9 +36,6 @@ df1 <- df1[!is.na(df1$public_access_type_id),]
 df1 %>% 
   group_by(public_access_type_id) %>% 
   summarise(count(public_access_type_id))
-# Public 1693
-# Private 391
-# Company 746
 
 ## Removing Nondescriptive, Irrelevant and Uninformative Variables
 df1 %>% 
