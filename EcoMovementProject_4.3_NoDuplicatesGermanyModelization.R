@@ -1,22 +1,6 @@
 ### ------------ Eco Movement Project ------------ ###
-### ------------- by Alican Tanaçan -------------- ###
+### ------------- by Alican TanaÃ§an -------------- ###
 ### ------ Version 4.3: Removing Duplicates ------ ###
-
-## We removed the duplicates in the Germany Data that may cause overfit!
-## As a result the performance metrics dropped significantly, but now the
-## model can be more reliable.
-## If we unique the data before modelization, then we might also remove
-## valuable information out of the data, no matter how repititive is the
-## info. Then the performance metrics will drop significantly as it 
-## happaned in this version.
-## It is also possible to remove duplicates after the data merge or before
-## excluding specific id variables from the data, then we might expect an 
-## icrease in the performance metrics.
-## Important Note: Please correct the path on source before running!
-## Source function should get the version 1 of our analysis.
-## Important Note: Please be careful to core selection, if your
-## computer does not have 8 cores, please do NOT run the core selection
-## cluster codes.
 
 ### ---- Libraries & Source ---- 
 if(require("pacman") == "FALSE"){
@@ -83,9 +67,6 @@ unique(ReadyEcoData) -> ReadyEcoData2
 ReadyEcoData2 %>% 
   group_by(public_access_type_id) %>% 
   summarise(count(public_access_type_id))
-# 2116 Public
-# 71 Private
-# 999 Company
 
 ## Change y data type to character in order to subset without empty classes
 ReadyEcoData2$public_access_type_id <- as.character(ReadyEcoData2$public_access_type_id)
@@ -115,8 +96,6 @@ EcoData_Sample_PrivCompOver <- ovun.sample(public_access_type_id~.,
 EcoData_Sample_PrivCompOver %>% 
   group_by(public_access_type_id) %>% 
   summarise(count(public_access_type_id))
-# private: 961
-# company: 999
 
 ## Take a random sample from public that is equal to amount of company observations
 Public_Sample2 <- Data_Public[sample(1:nrow(Data_Public), 999, replace = F),]
@@ -140,9 +119,6 @@ EcoData_Test <- EcoData_Sample2[-intrain,]
 EcoData_Train %>% 
   group_by(public_access_type_id) %>% 
   summarise(count(public_access_type_id))
-# Public: 700
-# private: 673
-# company: 700
 
 ### ---- Core Selection ----
 ## Find how many cores are on your machine
@@ -174,11 +150,6 @@ plot(RFmodel2)
 ## Most Important Variables
 plot(varImp(RFmodel2))
 predictors(RFmodel2)
-# power
-# Open_Hours (Regular)
-# lat
-# lng
-# capability_remote_start_stop_capable (Y)
 
 ## Predicton on Test set
 predRFmodel2 <- predict(RFmodel2, EcoData_Test)
@@ -190,16 +161,9 @@ RFmodel2metrics
 ## Confusion Matrix
 RFConfMat2 <- confusionMatrix(predRFmodel2, EcoData_Test$public_access_type_id) 
 RFConfMat2
-#              Reference
-# Prediction   1   2   3
-#          1 270   0  41
-#          2   4 288   6
-#          3  25   0 252
 
 # Accuracy: 0.914
 # Kappa: 0.871
-
-## This model is quite good to predict access types in Germany and only Germany!
 
 ## Save the model to disk
 save(RFmodel2, file = "EcoGermanyRFModel2.rda")
