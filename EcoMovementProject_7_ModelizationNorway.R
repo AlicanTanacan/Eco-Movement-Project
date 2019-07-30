@@ -1,10 +1,6 @@
 ### ------------ Eco Movement Project ------------ ###
-### ------------- by Alican Tanaçan -------------- ###
+### ------------- by Alican TanaÃ§an -------------- ###
 ### ---- Version 7: Norway Data Modelization ----- ###
-
-## Important Note: Please be careful to core selection, if your
-## computer does not have 8 cores, please do NOT run the core selection
-## cluster codes.
 
 ### ---- Libraries ---- 
 if(require("pacman") == "FALSE"){
@@ -36,9 +32,6 @@ NorwayData_Test <- CleanNorwayData[-intrain,]
 NorwayData_Train %>% 
   group_by(Access_Type) %>% 
   summarise(count(Access_Type))
-# Public 1718
-# Private 316
-# Company 567
 
 ### ---- Core Selection ----
 ## Find how many cores are on your machine
@@ -83,14 +76,6 @@ RFmodel1metrics
 ## Confusion Matrix
 RFConfMat <- confusionMatrix(predRFmodel1, NorwayData_Test$Access_Type) 
 RFConfMat
-#                   Reference
-# Prediction Company Private Public
-# Company     136      34     37
-# Private      25      58     14
-# Public       81      43    685
-
-# Accuracy: 0.789
-# Kappa: 0.551
 
 ### ---- C5.0 Modelization (Decision Tree) ----
 set.seed(4568)
@@ -123,14 +108,6 @@ C50model1metrics
 ## Confusion Matrix
 C50ConfMat <- confusionMatrix(predC50model1, NorwayData_Test$Access_Type) 
 C50ConfMat
-#                   Reference
-# Prediction Company Private Public
-# Company     126      17     32
-# Private      12      36      3
-# Public      104      82    701
-
-# Accuracy: 0.775
-# Kappa: 0.481
 
 ### ---- GBM Modelization (Gradiant Boosted Machine) ----
 set.seed(4569)
@@ -159,14 +136,6 @@ GBMmodel1metrics
 ## Confusion Matrix
 GBMConfMat <- confusionMatrix(predGBMmodel1, NorwayData_Test$Access_Type) 
 GBMConfMat
-#                   Reference
-# Prediction Company Private Public
-# Company     149      35     47
-# Private      28      55     19
-# Public       65      45    670
-
-# Accuracy: 0.785
-# Kappa: 0.552
 
 ### ---- kNN Modelization (k-Nearest Neighbor) ----
 set.seed(4570)
@@ -196,14 +165,6 @@ kNNmodel1metrics
 ## Confusion Matrix
 kNNConfMat <- confusionMatrix(predkNNmodel1, NorwayData_Test$Access_Type) 
 kNNConfMat
-#                   Reference
-# Prediction Company Private Public
-# Company     149      35     47
-# Private      28      55     19
-# Public       65      45    670
-
-# Accuracy: 0.785
-# Kappa: 0.552
 
 ## Stop Cluster
 stopCluster(cl)
@@ -228,23 +189,5 @@ AccuracyMetrics <- AccuracyMetrics[, c(3,1,2)]
 AccuracyMetrics %>% 
   arrange(desc(Accuracy))
 
-#         Algorithms  Accuracy     Kappa
-#    RFmodel1metrics 0.7897574 0.5510828 ***
-#   GBMmodel1metrics 0.7852650 0.5529422
-#   kNNmodel1metrics 0.7852650 0.5529422
-#   C50model1metrics 0.7753819 0.4815559
-
-# *** : Random Forest model performs the best! Let's improve it..
-
 ## Random Forest Important Variables
 varImp(RFmodel1)
-# Open_Hours
-# physical_type
-# connector_format
-# power
-# capability_rfid_reader
-# powertype
-# charging_when_closed
-# lat
-# lng
-# amperage
