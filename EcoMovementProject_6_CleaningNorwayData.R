@@ -1,10 +1,6 @@
 ### ------------ Eco Movement Project ------------ ###
-### ------------- by Alican Tanaçan -------------- ###
+### ------------- by Alican TanaÃ§an -------------- ###
 ### ------- Version 6: Data Cleaning & RFE ------- ###
-
-## Important Note: Please be careful to core selection, if your
-## computer does not have 8 cores, please do NOT run the core selection
-## cluster codes.
 
 ### ---- Libraries ---- 
 if(require("pacman") == "FALSE"){
@@ -30,12 +26,6 @@ unique(EcoNorwayData) -> EcoNorwayData # 0 duplicates at the moment
 ## Detect Missing Values
 sum(is.na(EcoNorwayData)) # Total 18689 NA's
 colSums(is.na(EcoNorwayData))
-# operator_id has 5725 NA's
-# owner_id has 8367 NA's
-# opening_times has 528 NA's
-# charging_when_closed has 478 NA's
-# connector_format has 3585 NA's
-# powertype has 6 NA's
 
 ## Missing Value Treatment
 EcoNorwayData[is.na(EcoNorwayData)] <- 0 # replace NA's with 0
@@ -164,9 +154,6 @@ ggplot(ReadyEcoNorwayData, aes(Access_Type, power)) +
 ReadyEcoNorwayData %>% 
   group_by(Access_Type) %>% 
   summarise(count(Access_Type))
-# Public 2454
-# Private 451
-# Company 809
 
 ## Change y data type to character in order to subset without empty classes
 ReadyEcoNorwayData$Access_Type <- as.character(ReadyEcoNorwayData$Access_Type)
@@ -196,9 +183,6 @@ EcoNorwayData_Sample$Access_Type <- as.factor(EcoNorwayData_Sample$Access_Type)
 EcoNorwayData_Sample %>% 
   group_by(Access_Type) %>% 
   summarise(count(Access_Type))
-# Public: 451
-# Private: 451
-# Company: 451
 
 ### ---- Core Selection ----
 ## Find how many cores are on your machine
@@ -237,15 +221,6 @@ plot(rfeResults, type=c("g", "o"))
 
 ## Most Important Variables
 varImp(rfeResults)
-#                           Overall
-# physical_type             29.489944
-# Open_Hours                25.694999
-# connector_format          18.076922
-# power                     15.713978
-# capability_rfid_reader    15.107562
-# powertype                 12.776930
-# charging_when_closed      12.104839
-# amperage                  10.090931
 
 ## Create new data set with rfe recommended features
 EcoNorwayDataRFE <- EcoNorwayData_Sample[,predictors(rfeResults)]
