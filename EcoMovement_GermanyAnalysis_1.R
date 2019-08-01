@@ -1,12 +1,6 @@
 ### ------------ Eco Movement Project ------------ ###
-### ------------- by Alican Tanaçan -------------- ###
+### ------------- by Alican TanaÃ§an -------------- ###
 ### --- Version 1: Reconstructing Germany Data --- ###
-
-## In short, the project goal is to develop a model that can predict/classify the public_access_type_id in Germany.
-## public_access_type_id  is a feature that defines whether a charging station is:
-##   1 public (i.e. publicly available)
-##   2 private (i.e. charging stations of private persons)
-##   3 company (i.e. provided by company, often publicly available, but with restrictions like not 24/7)
 
 ### ---- Libraries ----
 if(require("pacman") == "FALSE"){
@@ -42,9 +36,6 @@ df1 <- df1[!is.na(df1$public_access_type_id),]
 df1 %>% 
   group_by(public_access_type_id) %>% 
   summarise(count(public_access_type_id))
-# Public 2558
-# Private 197  <- too few!
-# Company 1286
 
 ## Removing Nondescriptive, Irrelevant and Uninformative Variables
 df1 %>% 
@@ -89,8 +80,6 @@ tally(group_by(df12, chargingstation_id)) -> a
 names(a)[2] <- paste("totalspots")
 
 levels(as.factor(a$totalspots)) 
-# 20 levels of totalspots from 1 to 24. Some stations have 1 charging spots where some
-# others have 24 spots.
 
 ## Add the new column to df12
 df12a <- merge(df12, a, by = "chargingstation_id")
@@ -129,14 +118,8 @@ h <- merge(g, e, by = "chargingstation_id")
 EcoGermanyData <- merge(h, f, by = "chargingstation_id")
 
 ## Detect Missing Values
-sum(is.na(EcoGermanyData)) # Total 9278 NA's
+sum(is.na(EcoGermanyData))
 colSums(is.na(EcoGermanyData))
-# operator_id has 183 NA's
-# owner_id has 183 NA's
-# opening_times has 4084 NA's
-# charging_when_closed has 4362 NA's
-# connector_format has 3585 NA's
-# powertype has 832 NA's
 
 ## Missing Value Treatment
 EcoGermanyData[is.na(EcoGermanyData)] <- 0 # replace NA's with 0
@@ -216,9 +199,6 @@ ReadyEcoData %>%
 ReadyEcoData %>% 
   group_by(Access_Type) %>% 
   summarise(count(Access_Type))
-# Public 4688
-# Private 186
-# Company 1550
 
 ## Change y data type to character in order to subset without empty classes
 ReadyEcoData$Access_Type <- as.character(ReadyEcoData$Access_Type)
@@ -261,9 +241,6 @@ GermanySample$Access_Type <- as.factor(GermanySample$Access_Type)
 GermanySample %>% 
   group_by(Access_Type) %>% 
   summarise(count(Access_Type))
-# Public: 500
-# Private: 480
-# Company: 500
 
 ### ---- Removing chargingstations_id ----
 ## It is also possible to exclude id column and keep track of it in caret modeling.
@@ -312,21 +289,6 @@ plot(rfeResults, type=c("g", "o"))
 
 ## Most Important Variables
 varImp(rfeResults)
-#                                       Overall
-# totalspots                           35.17151
-# maxpower                             20.37431
-# Open_Hours                           19.59481
-# connector_types_id                   17.06702
-# lng                                  16.96443
-# lat                                  16.80500
-# maxvoltage                           14.88043
-# capability_remote_start_stop_capable 14.41079
-# totalconnectors                      13.67403
-# spot_status                          13.43550
-# maxamperage                          13.32858
-# physical_type                        12.22100
-# connector_format                     11.91763
-# charging_when_closed                 11.83651
 
 ### ---- Feature Selection & Data Partition ----
 GermanySample %>%
@@ -380,12 +342,6 @@ RFmodelmetrics
 ## Confusion Matrix
 RFConfMat <- confusionMatrix(predRFmodel, GermanyTest2$Access_Type) 
 RFConfMat
-#              Reference
-# Prediction   1   2   3
-#          1 121   0  23
-#          2   6 143   2
-#          3  23   0 125
-
 # Accuracy: 0.876
 # Kappa: 0.814
 
