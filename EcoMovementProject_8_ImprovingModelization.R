@@ -1,6 +1,10 @@
 ### ------------ Eco Movement Project ------------ ###
-### ------------- by Alican TanaÃ§an -------------- ###
+### ------------- by Alican Tanaçan -------------- ###
 ### ----- Version 8: Improving Modelization ------ ###
+
+## Important Note: Please be careful to core selection, if your
+## computer does not have 8 cores, please do NOT run the core selection
+## cluster codes.
 
 ### ---- Libraries ---- 
 if(require("pacman") == "FALSE"){
@@ -32,6 +36,9 @@ CleanNorwayData %>%
 ReadyNorwayData %>% 
   group_by(Access_Type) %>% 
   summarise(count(Access_Type))
+# Public 2454
+# Private 451
+# Company 809
 
 intrain <- createDataPartition(y = CleanNorwayData$Access_Type, 
                                p = 0.7, 
@@ -43,6 +50,9 @@ NorwayData_Test <- CleanNorwayData[-intrain,]
 NorwayData_Train %>% 
   group_by(Access_Type) %>% 
   summarise(count(Access_Type))
+# Public 1718
+# Private 316
+# Company 567
 
 ### ---- Core Selection ----
 ## Find how many cores are on your machine
@@ -87,3 +97,15 @@ RFmodel2metrics
 ## Confusion Matrix
 RFConfMat2 <- confusionMatrix(predRFmodel2, NorwayData_Test$Access_Type) 
 RFConfMat2
+#                   Reference
+# Prediction Company Private Public
+# Company     146      37     28
+# Private      17      51     16
+# Public       79      47    692
+
+# Accuracy: 0.798
+# Kappa: 0.565
+
+# Our model fails to predict company and instead predicts public.
+# Our model also fails to predict private because of few private observations in the data.
+# Out model predicts public very well with minor errors.
