@@ -1,12 +1,6 @@
 ### ------------ Eco Movement Project ------------ ###
-### ------------- by Alican Tanaçan -------------- ###
+### ------------- by Alican TanaÃ§an -------------- ###
 ### ------ Version 2: Germany Data Analysis ------ ###
-
-## In short, the project goal is to develop a model that can predict/classify the public_access_type_id in Germany.
-## public_access_type_id  is a feature that defines whether a charging station is:
-##   1 public (i.e. publicly available)
-##   2 private (i.e. charging stations of private persons)
-##   3 company (i.e. provided by company, often publicly available, but with restrictions like not 24/7)
 
 ### ---- Libraries ----
 if(require("pacman") == "FALSE"){
@@ -64,9 +58,6 @@ df1 <- df1[!is.na(df1$public_access_type_id),]
 df1 %>% 
   group_by(public_access_type_id) %>% 
   summarise(count(public_access_type_id))
-# Public 2558
-# Private 197  <- too few!
-# Company 1286
 
 ## Removing Nondescriptive, Irrelevant and Uninformative Variables
 df1 %>% 
@@ -105,8 +96,6 @@ tally(group_by(df12, chargingstation_id)) -> a
 names(a)[2] <- paste("totalspots")
 
 levels(as.factor(a$totalspots)) 
-# 20 levels of totalspots from 1 to 24. Some stations have 1 charging spots where some
-# others have 24 spots.
 
 ## Add the new column to df12
 df12a <- merge(df12, a, by = "chargingstation_id")
@@ -120,7 +109,6 @@ tally(group_by(df3, charging_spots_id)) -> b
 names(b)[2] <- paste("totalconnectors")
 
 levels(as.factor(b$totalconnectors))
-# 3 levels of totalconnectors. Spot connectors can be 1, 2 or 3.
 
 ## Add the new column to df12a
 df12ab <- merge(df12a, b, by = "charging_spots_id")
@@ -268,9 +256,6 @@ ReadyEcoData %>%
 ReadyEcoData %>% 
   group_by(Access_Type) %>% 
   summarise(count(Access_Type))
-# Public 2531
-# Private 186
-# Company 1266
 
 ## Change y data type to character in order to subset without empty classes
 ReadyEcoData$Access_Type <- as.character(ReadyEcoData$Access_Type)
@@ -313,9 +298,6 @@ GermanySample$Access_Type <- as.factor(GermanySample$Access_Type)
 GermanySample %>% 
   group_by(Access_Type) %>% 
   summarise(count(Access_Type))
-# Public: 500
-# Private: 480
-# Company: 500
 
 ### ---- Removing chargingstations_id ----
 ## It is also possible to exclude id column and keep track of it in caret modeling.
@@ -364,16 +346,6 @@ plot(rfeResults, type=c("g", "o"))
 
 ## Most Important Variables
 varImp(rfeResults)
-#                Overall
-# Open_Hours    43.38186
-# maxpower      30.94530
-# physical_type 28.92642
-# lat           20.10162
-# sumconnectors 19.89555
-# lng           19.49497
-# maxamperage   17.20227
-# totalspots    16.16551
-# maxvoltage    11.40072
 
 ### ---- Feature Selection & Data Partition for Random Forest ----
 GermanySample %>%
@@ -430,14 +402,6 @@ RFmodelmetrics
 ## Confusion Matrix
 RFConfMat <- confusionMatrix(predRFmodel, GermanyTest2$Access_Type) 
 RFConfMat
-#            Reference
-# Prediction Company Private Public
-# Company     114       1     16
-# Private       5     141      1
-# Public       31       2    133
-
-# Accuracy: 0.873
-# Kappa: 0.810
 
 ### ---- Feature Selection & Data Partition without Over Sampling ----
 ReadyEcoData$Access_Type <- as.factor(ReadyEcoData$Access_Type)
@@ -465,16 +429,10 @@ GermanyTest3 <- GermanySample3[-intrain,]
 GermanyTrain3 %>% 
   group_by(Access_Type) %>% 
   summarise(count(Access_Type))
-# Public 1772
-# Private 131 
-# Company 887
 
 GermanyTest3 %>% 
   group_by(Access_Type) %>% 
   summarise(count(Access_Type))
-# Public 759
-# Private 55 
-# Company 379
 
 ### ---- Random Forest ----
 set.seed(567)
@@ -509,14 +467,6 @@ RFmodel2metrics
 ## Confusion Matrix
 RFConfMat2 <- confusionMatrix(predRFmodel2, GermanyTest3$Access_Type) 
 RFConfMat2
-#            Reference
-# Prediction Company Private Public
-# Company     305       3     35
-# Private       1      50      2
-# Public       73       2    722
-
-# Accuracy: 0.902
-# Kappa: 0.798
 
 ## Stop Cluster
 stopCluster(cl)
