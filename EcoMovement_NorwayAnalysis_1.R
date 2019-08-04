@@ -1,12 +1,6 @@
 ### ------------ Eco Movement Project ------------ ###
-### ------------- by Alican Tanaçan -------------- ###
+### ------------- by Alican TanaÃ§an -------------- ###
 ### ------ Version 1: Norway Data Analysis ------- ###
-
-## In short, the project goal is to develop a model that can predict/classify the public_access_type_id in Germany.
-## public_access_type_id  is a feature that defines whether a charging station is:
-##   1 public (i.e. publicly available)
-##   2 private (i.e. charging stations of private persons)
-##   3 company (i.e. provided by company, often publicly available, but with restrictions like not 24/7)
 
 ### ---- Libraries ----
 if(require("pacman") == "FALSE"){
@@ -40,17 +34,14 @@ n_occur[n_occur$Freq > 1,]
 ## Check how many chargingstation_id are there in df2, how many times they occur?
 n_occur2 <- data.frame(table(df2$chargingstation_id))
 n_occur2[n_occur2$Freq > 1,]
-# 2818 unique chargingstation_id's
 
 ## Check how many charging_spots_id are there in df2, how many times they occur?
 n_occur3 <- data.frame(table(df2$charging_spots_id))
 n_occur3[n_occur3$Freq > 1,]
-# 14845 unique charging_spots_id's
 
 ## Check how many charging_spots_id are there in df3, how many times they occur?
 n_occur4 <- data.frame(table(df3$charging_spots_id))
 n_occur4[n_occur4$Freq > 1,]
-# 14845 unique charging_spots_id's
 
 ### ---- Preprocess Before Merging ----
 
@@ -64,9 +55,6 @@ df1 <- df1[!is.na(df1$public_access_type_id),]
 df1 %>% 
   group_by(public_access_type_id) %>% 
   summarise(count(public_access_type_id))
-# Public 1693
-# Private 391
-# Company 746
 
 ## Removing Nondescriptive, Irrelevant and Uninformative Variables
 df1 %>% 
@@ -105,8 +93,6 @@ tally(group_by(df12, chargingstation_id)) -> a
 names(a)[2] <- paste("totalspots")
 
 levels(as.factor(a$totalspots)) 
-# 49 levels of totalspots from 1 to 24. Some stations have 1 charging spots where some
-# others have 104 spots.
 
 ## Add the new column to df12
 df12a <- merge(df12, a, by = "chargingstation_id")
@@ -268,9 +254,6 @@ ReadyEcoData %>%
 ReadyEcoData %>% 
   group_by(Access_Type) %>% 
   summarise(count(Access_Type))
-# Public 1693
-# Private 381
-# Company 737
 
 ## Change y data type to character in order to subset without empty classes
 ReadyEcoData$Access_Type <- as.character(ReadyEcoData$Access_Type)
@@ -301,9 +284,6 @@ NorwaySample <- rbind(Data_Private,
 NorwaySample %>% 
   group_by(Access_Type) %>% 
   summarise(count(Access_Type))
-# Public: 381
-# Private: 381
-# Company: 381
 
 NorwaySample$Access_Type <- as.factor(NorwaySample$Access_Type)
 
@@ -346,14 +326,6 @@ plot(rfeResults, type=c("g", "o"))
 
 ## Most Important Variables
 varImp(rfeResults)
-#               Overall
-# physical_type 32.86444
-# Open_Hours    30.30897
-# maxamperage   23.04235
-# maxpower      20.09207
-# lng           17.08888
-# lat           15.25444
-# sumconnectors 14.07928
 
 ### ---- Feature Selection & Data Partition for Random Forest ----
 ReadyEcoData$Access_Type <- as.factor(ReadyEcoData$Access_Type)
@@ -379,16 +351,10 @@ NorwayTest <- NorwaySample2[-intrain,]
 NorwayTrain %>% 
   group_by(Access_Type) %>% 
   summarise(count(Access_Type))
-# Public 1186
-# Private 267 
-# Company 516
 
 NorwayTest %>% 
   group_by(Access_Type) %>% 
   summarise(count(Access_Type))
-# Public  507
-# Private 114 
-# Company 221
 
 ### ---- Random Forest ----
 set.seed(567)
@@ -423,14 +389,6 @@ RFmodelmetrics
 ## Confusion Matrix
 RFConfMat <- confusionMatrix(predRFmodel, NorwayTest$Access_Type) 
 RFConfMat
-#            Reference
-# Prediction Company Private Public
-# Company      94      12     17
-# Private       8      31      3
-# Public      119      71    487
-
-# Accuracy: 0.726
-# Kappa: 0.419
 
 ## Stop Cluster
 stopCluster(cl)
